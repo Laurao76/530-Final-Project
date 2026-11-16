@@ -1,0 +1,10 @@
+# Python environments and generated files
+.venv*/
+__pycache__/
+*.pyc
+.cache/
+
+# Private credentials
+.env
+.env.*
+.streamlit/secrets.toml

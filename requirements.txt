@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+matplotlib
+scikit-learn==1.6.1
+joblib
+smolagents[openai]
+openai
+inspect-ai
+ddgs

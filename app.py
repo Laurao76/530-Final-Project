@@ -288,6 +288,54 @@ def main():
       border-left:2px solid #a74b46!important; padding-left:1.2rem!important;}
     hr {border-color:#b9b9b1;}
     @media(max-width:600px) {h1 {font-size:2.5rem!important;}}
+        /* Stronger editorial typography and readable form text. */
+    [data-testid="stHeading"] h1,
+    [data-testid="stHeading"] h2,
+    [data-testid="stHeading"] h3 {
+      font-family: Georgia, "Times New Roman", serif !important;
+      font-weight: 500 !important;
+    }
+
+    [data-testid="stWidgetLabel"] p {
+      color: #242729 !important;
+      font-weight: 600;
+    }
+
+    [data-testid="stCaptionContainer"] p {
+      color: #575D63 !important;
+    }
+
+    textarea::placeholder {
+      color: #666D74 !important;
+      opacity: 1 !important;
+    }
+
+    /* A two-color newspaper rule beneath the masthead. */
+    .edition {
+      border-top: 0;
+      border-image: none;
+      background: linear-gradient(
+        to right, #263D58 0%, #263D58 68%,
+        #A43D40 68%, #A43D40 100%
+      ) top / 100% 4px no-repeat;
+      padding-top: 1rem;
+    }
+
+    /* Small red rules distinguish section headings. */
+    [data-testid="stHeading"] h2::before {
+      content: "";
+      display: block;
+      width: 38px;
+      height: 3px;
+      background: #A43D40;
+      margin-bottom: .7rem;
+    }
+
+    [data-testid="stTextArea"] textarea {
+      border: 1px solid #8C9196 !important;
+      color: #242729 !important;
+      background: #FFFEFA !important;
+    }
     </style>""", unsafe_allow_html=True)
     st.markdown('<div class="edition"><span>Civic life · Public perspectives</span>'
                 '<span>A field guide to thoughtful discussion</span></div>',
@@ -309,10 +357,10 @@ def main():
         st.caption("Name an issue and tell us what you hope to understand.")
         st.write("What would help you prepare? (optional)")
         left, right = st.columns(2)
-        concerns = left.checkbox("Understand concerns")
-        perspectives = right.checkbox("Explore different perspectives")
+        concerns = left.checkbox("◎ Understand concerns")
+        perspectives = right.checkbox("⇄ Explore different perspectives")
         st.caption("Historical survey trends are planned for a future version.")
-        submitted = st.form_submit_button("Explore issue")
+        submitted = st.form_submit_button("Explore issue →")
 
     if submitted:
         if not request.strip():

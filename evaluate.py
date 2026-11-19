@@ -123,7 +123,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--variant", choices=["app", "baseline"], default="app")
     parser.add_argument("--limit", type=int, choices=range(1, 21), default=20)
+    parser.add_argument("--cases", nargs="+", type=int, choices=range(1, 21),
+                        help="Original case numbers to rerun, such as 13 15 20")
     args = parser.parse_args()
+    selected_cases = [(number, case) for number, case in enumerate(CASES, 1)
+                      if args.cases is None or number in args.cases][:args.limit]
     # Load data before timing: measure request latency, excluding cold startup.
     load_evidence()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
@@ -139,7 +143,8 @@ def main():
             versions[package] = "not installed"
     (folder / "settings.json").write_text(json.dumps({
         "variant": args.variant, "generation_model": "gpt-4.1-mini", "goals": [], "packages": versions,
-        "started_utc": stamp, "cases": len(CASES[:args.limit]),
+        "started_utc": stamp, "cases": len(selected_cases),
+        "case_ids": [f"case_{number:02d}" for number, _ in selected_cases],
         "scoring": "manual; two dimensions, 0-2 each",
     }, indent=2), encoding="utf-8")
     # Snapshot source code so future edits do not obscure which app was tested.
@@ -149,9 +154,9 @@ def main():
     with (folder / "scores.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
         writer.writeheader()
-        for number, (category, request, expected) in enumerate(CASES[:args.limit], 1):
+        for progress, (number, (category, request, expected)) in enumerate(selected_cases, 1):
             case_id = f"case_{number:02d}"
-            print(f"Running {case_id} ({number}/{args.limit})", flush=True)
+            print(f"Running {case_id} ({progress}/{len(selected_cases)})", flush=True)
             start = time.perf_counter()
             try:
                 if args.variant == "baseline":
